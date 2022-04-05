@@ -35,7 +35,7 @@ make_name <- function(tail_area_odds){
   string_vec <- paste0(app,string)
   string_vec
 }
-wodds <- function(y){
+wodds <- function(y, include_tail_area = FALSE, include_outliers = TRUE, include_depth= FALSE){
   data = sort(y)
   s = sort(data)
   n = length(data)
@@ -73,7 +73,8 @@ wodds <- function(y){
   qupper = qs[seq(2, length(qs), 2)]
   lower = vf[seq(1, length(vf), 2)]
   upper = vf[seq(2, length(vf), 2)]
-  tail_area = 2 ^ seq(1, k)
+  depth = seq(1, k)
+  tail_area = 2 ^ depth
   wodd_depth_name <- make_name(tail_area)
   o_upper <- sort(y[y>max(upper)])
   o_lower <- sort(y[y<min(lower)], decreasing = TRUE)
@@ -81,13 +82,67 @@ wodds <- function(y){
   length(o_upper) <- o_max_len
   length(o_lower) <- o_max_len
   o_name <- paste0("*", seq(1,o_max_len), "*")
-  df_o <- tibble::tibble(lower_value=o_lower, wodd_name = o_name, upper_value=o_upper)
-  #tibble::tibble(tail_area_odds = tail_area, lower_quantile=qlower, upper_quantile=qupper, wodd_name = wodd_depth_name,lower_value=lower, upper_value=upper)
+  #df_o <- tibble::tibble(lower_value=o_lower, wodd_name = o_name, upper_value=o_upper)
+  #df_base <- tibble::tibble(lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+  if (include_tail_area == TRUE & include_outliers == TRUE & include_depth == TRUE){
+    #111
+    length(tail_area) <- o_max_len
+    length(depth) <- o_max_len
+    df_o <- tibble::tibble(lower_value=o_lower, wodd_name = o_name, upper_value=o_upper)
+    df_base <- tibble::tibble(include_depth = depth, lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+    df <- dplyr::bind_rows(df_base, df_o) %>% dplyr::mutate(tail_area = tail_area, include_depth = depth)
+    df
+  }else if (include_tail_area == FALSE & include_outliers == TRUE & include_depth == TRUE){
+    #011
+    length(tail_area) <- o_max_len
+    length(depth) <- o_max_len
+    df_o <- tibble::tibble(lower_value=o_lower, wodd_name = o_name, upper_value=o_upper)
+    df_base <- tibble::tibble(lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+    df <- dplyr::bind_rows(df_base, df_o) %>%  dplyr::mutate(include_depth = depth)
+    df
+  }else if (include_tail_area == TRUE & include_outliers == TRUE & include_depth == FALSE){
+    #110
+    length(tail_area) <- o_max_len
+    length(depth) <- o_max_len
+    df_o <- tibble::tibble(lower_value=o_lower, wodd_name = o_name, upper_value=o_upper)
+    df_base <- tibble::tibble(lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+    df <- dplyr::bind_rows(df_base, df_o) %>%  dplyr::mutate(tail_area = tail_area)
+    df
+  }else if (include_tail_area == FALSE & include_outliers == TRUE & include_depth == FALSE){
+    #010
+    length(tail_area) <- o_max_len
+    length(depth) <- o_max_len
+    df_o <- tibble::tibble(lower_value=o_lower, wodd_name = o_name, upper_value=o_upper)
+    df_base <- tibble::tibble(include_depth = depth, tail_area = tail_area, lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+    df <- dplyr::bind_rows(df_base, df_o)
+    df
+  }else if (include_tail_area == TRUE & include_outliers == FALSE & include_depth == TRUE){
+    #101
+    df_base <- tibble::tibble(include_depth = depth, tail_area = tail_area, lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+    df_base
+  }else if (include_tail_area == FALSE & include_outliers == FALSE & include_depth == TRUE){
+  #001
+  df_base <- tibble::tibble(include_depth = depth, lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+  df_base
+  }else if (include_tail_area == FALSE & include_outliers == FALSE & include_depth == FALSE){
+  #000
   df_base <- tibble::tibble(lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
-  dplyr::bind_rows(df_base, df_o)
+  df_base
+  }else if (include_tail_area == TRUE & include_outliers == FALSE & include_depth == FALSE){
+  #100
+  df_base <- tibble::tibble(tail_area = tail_area,lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+  df_base
+  }
+else{
+  df_o <- tibble::tibble(lower_value=o_lower, wodd_name = o_name, upper_value=o_upper)
+  df_base <- tibble::tibble(lower_value=lower, wodd_name = wodd_depth_name, upper_value=upper)
+  df <- dplyr::bind_rows(df_base, df_o)
+  df
+  }
 }
 
-norms <- rnorm(n=2e6,0,1); wodds(norms) %>% print(n = 30)
+
+norms <- rnorm(n=500,0,1); wodds(norms, include_tail_area = T) %>% print(n = 30)
 pois <- rpois(n=2e5,1); wodds(pois) %>% print(n = 30)
 unif <- runif(n=2e5,1,10); wodds(unif) %>% print(n = 30)
 td <- rt(n=2e5,10,df = 2); wodds(td) %>% print(n = 30)
