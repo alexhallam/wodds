@@ -16,3 +16,5 @@ Imports:
     stats,
     magrittr,
     tibble
+URL: https://github.com/alexhallam/wodds
+BugReports: https://github.com/alexhallam/wodds/issues
