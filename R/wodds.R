@@ -35,7 +35,13 @@ make_name <- function(tail_area_odds){
   string_vec <- paste0(app,string)
   string_vec
 }
-wodds <- function(y, include_tail_area = FALSE, include_outliers = TRUE, include_depth= FALSE){
+#' Calculate Whisker Odds aka wodds
+#'
+#' @param y A vector of values
+#' @return A dataframe of wodds
+#' @examples
+#' wodds(rnorm(1e4, 0, 1))
+wodds <- function(y, include_tail_area = FALSE, include_outliers = FALSE, include_depth= FALSE){
   data = sort(y)
   s = sort(data)
   n = length(data)
@@ -89,17 +95,22 @@ wodds <- function(y, include_tail_area = FALSE, include_outliers = TRUE, include
   df_with_outliers <- dplyr::bind_rows(df_base, df_o)
   df_with_outliers_depth <- df_with_outliers %>% dplyr::mutate(depth = depth) %>% dplyr::select(depth, lower_value, wodd_name, upper_value)
   df_with_outliers_depth_tail_area <- df_with_outliers %>% dplyr::mutate(depth = depth, tail_area = tail_area) %>% dplyr::select(depth, tail_area, lower_value, wodd_name, upper_value)
-  if(include_tail_area ==FALSE & include_outliers == TRUE & include_depth == FALSE){
-    df_with_outliers_depth_tail_area %>% dplyr::select(-tail_area, -depth)
-  }else if(include_tail_area ==TRUE & include_outliers == TRUE & include_depth == FALSE){
-    df_with_outliers_depth_tail_area %>% dplyr::select(-tail_area)
-  }else if(include_tail_area ==TRUE & include_outliers == TRUE & include_depth == TRUE){
-    df_with_outliers_depth_tail_area
+  if(include_outliers == TRUE){
+    if(include_tail_area ==FALSE & include_depth == FALSE){
+      df_with_outliers_depth_tail_area %>% dplyr::select(-tail_area, -depth)
+    }else if(include_tail_area ==TRUE &  include_depth == FALSE){
+      df_with_outliers_depth_tail_area %>% dplyr::select(-depth)
+    }else if(include_tail_area ==TRUE & include_depth == TRUE){
+      df_with_outliers_depth_tail_area
+    }
+  }else{
+    df_with_depth_tail_area <- df_with_outliers_depth_tail_area %>% dplyr::filter(!is.na(depth))
+    if(include_tail_area ==FALSE & include_depth == FALSE){
+      df_with_depth_tail_area %>% dplyr::select(-tail_area, -depth)
+    }else if(include_tail_area ==TRUE &  include_depth == FALSE){
+      df_with_depth_tail_area %>% dplyr::select(-depth)
+    }else if(include_tail_area ==TRUE & include_depth == TRUE){
+      df_with_depth_tail_area
+    }
   }
 }
-
-
-norms <- rnorm(n=500,0,1); wodds(norms, include_tail_area = T) #%>% print(n = 30)
-pois <- rpois(n=2e5,1); wodds(pois) %>% print(n = 30)
-unif <- runif(n=2e5,1,10); wodds(unif) %>% print(n = 30)
-td <- rt(n=2e5,10,df = 2); wodds(td) %>% print(n = 30)

@@ -1,0 +1,18 @@
+Package: wodds
+Type: Package
+Title: Calculates Whisker Odds
+Version: 0.1.0
+Author: Alex Hallam
+Maintainer: <alexhallam6.28@gmail.com>
+Description: This package caluclates whisker odds. This is the same as
+    letter-values, but with an alternative naming of depths which 
+    allow for depths beyond 26.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
+Imports:
+    dplyr,
+    stats,
+    magrittr,
+    tibble
