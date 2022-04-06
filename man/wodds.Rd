@@ -2,24 +2,35 @@
 % Please edit documentation in R/wodds.R
 \name{wodds}
 \alias{wodds}
-\title{Calculate Whisker Odds aka wodds}
+\title{Calculate whisker odds}
 \usage{
 wodds(
   y,
   include_tail_area = FALSE,
   include_outliers = FALSE,
-  include_depth = FALSE
+  include_depth = FALSE,
+  big_data = FALSE
 )
 }
 \arguments{
 \item{y}{A vector of values}
+
+\item{include_tail_area}{a binary. If true then include a column of tail area 2^(i)}
+
+\item{include_outliers}{a binary. If true include a column of outliers beyond the last wodd depth}
+
+\item{include_depth}{a binary. If true include a column indicating the depth of the letter value}
 }
 \value{
 A dataframe of wodds
+  \item{lower_value}{lower value}
+  \item{wodd_name}{Name of wodd}
+  \item{upper_value}{upper value}
 }
 \description{
-Calculate Whisker Odds aka wodds
+makes whisker odds
 }
 \examples{
+
 wodds(rnorm(1e4, 0, 1))
 }

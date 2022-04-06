@@ -1,47 +1,111 @@
-# Hello, world!
-#
-# This is an example function named 'hello'
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Install Package:           'Ctrl + Shift + B'
-#   Check Package:             'Ctrl + Shift + E'
-#   Test Package:              'Ctrl + Shift + T'
+#' Wodd format
+#'
+#' @description
+#' private function for internal package use. cleans up names
+#'
+#' @param wodd_name - a string
+#'
+#' @return a vector string of names
+wodd_format <- function(wodd_name){
+  wodd_name = gsub("S0", "", wodd_name)
+  wodd_name = gsub("S1", "S", wodd_name)
+  wodd_name
+}
 
-get_first_digit_in_hex <- function(tail_area_odds){
-  first_digit_in_hex <- substr(as.character(as.integer(as.character(as.hexmode(tail_area_odds)))), 1, 1)
-  first_digit_in_hex
+#' Raw wodd
+#'
+#' @description
+#' private function for internal package use. Calculates raw wodd name without formatting.
+#'
+#' @param index - an int
+#'
+#' @return a vector string of names
+raw_wodd <- function(index){
+  int = 2^index
+  S = 0
+  counted = FALSE
+  if (int >= 16){
+    while (counted == FALSE){
+      if (int >= 16^S){S = S+1}
+      else{counted = TRUE; S = S - 1}
+    }
+  }
+  if ((16^(S)*1) == int){return(wodd_format(glue::glue('S{S}')))
+    }else if ((16^(S)*2) == int){return(wodd_format(glue::glue('S{S}M')))
+    }else if ((16^(S)*4) == int){return(wodd_format(glue::glue('S{S}F')))
+    }else if ((16^(S)*8) == int){return(wodd_format(glue::glue('S{S}E')))}
 }
-get_log10_in_hex <- function(tail_area_odds){
-  log10_in_hex <- log10(as.integer(as.character(as.hexmode(tail_area_odds))))
-  log10_in_hex
+
+#' Make wodd name big data
+#'
+#' @description
+#' private function for internal package use. If the data exceeds depth of 100 then calculate wodds manually
+#'
+#' @param index - an int
+#'
+#' @return a vector string of names
+make_wodd_name_big_data <- function(index){
+  wodd_depth <- seq(1:index)
+  wodd_name <- map_chr(.x = wodd_depth, .f = raw_wodd)
+  wodd_name
 }
-wodd_name_key_values <- c(
-  '2' = 'M',
-  '4' = 'F',
-  '8' = 'E',
-  '1' = ''
-)
-make_name <- function(tail_area_odds){
-  s <- get_first_digit_in_hex(tail_area_odds)
-  l <- get_log10_in_hex(tail_area_odds)
-  string <- wodd_name_key_values[s]
-  app <- ifelse(l >= log10(100),paste0("S", trunc(l)), ifelse(l < log10(128) & l > log10(8), "S", ""))
-  string_vec <- paste0(app,string)
-  string_vec
+
+#' Make wodd name big data
+#'
+#' @description
+#' private function for internal package use. This is the standard way that wodds are obtained. "Dictionary"
+#'
+#' @param index - an int
+#'
+#' @return a vector string of names
+select_wodd_name_from_table <- function(index){
+  if (index > 100){
+    stop("Please set big_data = TRUE")
+  }else{
+  first_100_wodd_depths_and_names <- structure(list(i = 1:100, wodd_name = c("M", "F", "E", "S", "SM",
+                                    "SF", "SE", "S2", "S2M", "S2F", "S2E", "S3", "S3M", "S3F", "S3E",
+                                    "S4", "S4M", "S4F", "S4E", "S5", "S5M", "S5F", "S5E", "S6", "S6M",
+                                    "S6F", "S6E", "S7", "S7M", "S7F", "S7E", "S8", "S8M", "S8F",
+                                    "S8E", "S9", "S9M", "S9F", "S9E", "S0", "S0M", "S0F", "S0E",
+                                    "S1", "S1M", "S1F", "S1E", "S2", "S2M", "S2F", "S2E", "S3", "S3M",
+                                    "S3F", "S3E", "S4", "S4M", "S4F", "S4E", "S5", "S5M", "S5F",
+                                    "S5E", "S6", "S6M", "S6F", "S6E", "S7", "S7M", "S7F", "S7E",
+                                    "S8", "S8M", "S8F", "S8E", "S9", "S9M", "S9F", "S9E", "S20",
+                                    "S20M", "S20F", "S20E", "S21", "S21M", "S21F", "S21E", "S22",
+                                    "S22M", "S22F", "S22E", "S23", "S23M", "S23F", "S23E", "S24",
+                                    "S24M", "S24F", "S24E", "S25")), class = c("tbl_df", "tbl", "data.frame"
+                                    ), row.names = c(NA, -100L))
+  wodd_name <- dplyr::filter(first_100_wodd_depths_and_names, i <= index) %>% dplyr::pull(wodd_name)
+  wodd_name
+  }
 }
-#' Calculate Whisker Odds aka wodds
+#' Calculate whisker odds
+#'
+#' @description makes whisker odds
 #'
 #' @param y A vector of values
+#' @param include_tail_area a binary. If true then include a column of tail area 2^(i)
+#' @param include_outliers a binary. If true include a column of outliers beyond the last wodd depth
+#' @param include_depth a binary. If true include a column indicating the depth of the letter value
+#'
 #' @return A dataframe of wodds
+#'   \item{lower_value}{lower value}
+#'   \item{wodd_name}{Name of wodd}
+#'   \item{upper_value}{upper value}
+#'
+#' @import dplyr
+#' @importFrom tibble tibble
+#' @importFrom magrittr %>%
+#' @importFrom purrr map_chr
+#' @importFrom stats qnorm
+#'
+#' @export
+#'
+#' @examples
+#'
 #' @examples
 #' wodds(rnorm(1e4, 0, 1))
-wodds <- function(y, include_tail_area = FALSE, include_outliers = FALSE, include_depth= FALSE){
+wodds <- function(y, include_tail_area = FALSE, include_outliers = FALSE, include_depth= FALSE, big_data = FALSE){
   data = sort(y)
   s = sort(data)
   n = length(data)
@@ -81,7 +145,11 @@ wodds <- function(y, include_tail_area = FALSE, include_outliers = FALSE, includ
   upper = vf[seq(2, length(vf), 2)]
   depth = seq(1, k)
   tail_area = 2 ^ depth
-  wodd_depth_name <- make_name(tail_area)
+  if (big_data == TRUE){
+    wodd_depth_name <- make_wodd_name_big_data(k)
+  }else{
+    wodd_depth_name <- select_wodd_name_from_table(k)
+  }
   o_upper <- sort(y[y>max(upper)])
   o_lower <- sort(y[y<min(lower)], decreasing = TRUE)
   o_max_len <- max(length(o_upper), length(o_lower))
