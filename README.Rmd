@@ -13,13 +13,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# wodds
+<h1 align="center">Whisker Odds (wodds)</h1>
+<p align="center">wodds calculation for big data</p>
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 The goal of `wodds` is to make the calculations of whisker odds (wodds) easy.
-Whisker odds follow the same rules as letter-values, but with a different naming 
+Wodds follow the same rules as letter-values, but with a different naming 
 system.
 
 ## Installation
@@ -44,8 +45,25 @@ df_wodds <- wodds::wodds(a)
 df_wodds
 ```
 
-Works with `knitr::kable` for publications.
+```{r example 1.1}
+df_wodds_and_outs <- wodds::wodds(a, include_outliers = TRUE)
+df_wodds_and_outs
+```
+
+A `knitr::kable` example for publication.
 
 ```{r example 2}
 knitr::kable(df_wodds, align = 'c',digits = 3)
 ```
+
+## Whisker Odds and Letter-Values
+
+Letter-Values are a fantiastic tool! I think the naming could be improved. 
+For this reason I introduce whisker odds (wodds) as an alternative naming system.
+My hypothesis is that with an alternative naming system the use of these 
+descriptive statistics will be see more use. This is a rebranding of a what I
+think is a powerfull modern statistical tool.
+
+![](man/figures/table.png)
+
+
