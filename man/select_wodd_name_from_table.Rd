@@ -2,16 +2,19 @@
 % Please edit documentation in R/wodds.R
 \name{select_wodd_name_from_table}
 \alias{select_wodd_name_from_table}
-\title{Make wodd name big data}
+\title{select_wodd_name_from_table}
 \usage{
 select_wodd_name_from_table(index)
 }
 \arguments{
-\item{index}{- an int}
+\item{index}{int}
 }
 \value{
-a vector string of names
+A vector
 }
 \description{
-private function for internal package use. This is the standard way that wodds are obtained. "Dictionary"
+select_wodd_name_from_table a private function
+}
+\examples{
+select_wodd_name_from_table(1)
 }

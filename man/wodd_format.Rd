@@ -2,16 +2,16 @@
 % Please edit documentation in R/wodds.R
 \name{wodd_format}
 \alias{wodd_format}
-\title{Wodd format}
+\title{wodd_format}
 \usage{
 wodd_format(wodd_name)
 }
 \arguments{
-\item{wodd_name}{- a string}
+\item{wodd_name}{string}
 }
 \value{
-a vector string of names
+A string
 }
 \description{
-private function for internal package use. cleans up names
+wodd_format a private function
 }

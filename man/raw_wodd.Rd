@@ -2,16 +2,16 @@
 % Please edit documentation in R/wodds.R
 \name{raw_wodd}
 \alias{raw_wodd}
-\title{Raw wodd}
+\title{raw_wodd}
 \usage{
 raw_wodd(index)
 }
 \arguments{
-\item{index}{- an int}
+\item{index}{int}
 }
 \value{
-a vector string of names
+A vector
 }
 \description{
-private function for internal package use. Calculates raw wodd name without formatting.
+raw_wodd a private function
 }

@@ -15,11 +15,17 @@ wodds(
 \arguments{
 \item{y}{A vector of values}
 
-\item{include_tail_area}{a binary. If true then include a column of tail area 2^(i)}
+\item{include_tail_area}{a binary.
+If true then include a column of tail area 2^(i)}
 
-\item{include_outliers}{a binary. If true include a column of outliers beyond the last wodd depth}
+\item{include_outliers}{a binary.
+If true include a column of outliers beyond the last wodd depth}
 
-\item{include_depth}{a binary. If true include a column indicating the depth of the letter value}
+\item{include_depth}{a binary.
+If true include a column indicating the depth of the letter value}
+
+\item{big_data}{a binary.
+If k is larger than 100 the table is no longer useful.}
 }
 \value{
 A dataframe of wodds
@@ -31,6 +37,5 @@ A dataframe of wodds
 makes whisker odds
 }
 \examples{
-
 wodds(rnorm(1e4, 0, 1))
 }

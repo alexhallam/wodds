@@ -2,16 +2,16 @@
 % Please edit documentation in R/wodds.R
 \name{make_wodd_name_big_data}
 \alias{make_wodd_name_big_data}
-\title{Make wodd name big data}
+\title{make_wodd_name_big_data}
 \usage{
 make_wodd_name_big_data(index)
 }
 \arguments{
-\item{index}{- an int}
+\item{index}{int}
 }
 \value{
-a vector string of names
+A vector
 }
 \description{
-private function for internal package use. If the data exceeds depth of 100 then calculate wodds manually
+make_wodd_name_big_data a private function
 }
