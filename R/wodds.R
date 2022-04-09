@@ -46,9 +46,9 @@ raw_wodd <- function(index) {
     return(wodd_format(glue::glue("S{power}E")))
   }
 }
-#' make_wodd_name_big_data
+#' make_wodd_name
 #'
-#' @description make_wodd_name_big_data a private function
+#' @description make_wodd_name a private function
 #'
 #' @param index int
 #'
@@ -57,7 +57,7 @@ raw_wodd <- function(index) {
 #' @importFrom purrr map_chr
 #'
 #' @export
-make_wodd_name_big_data <- function(index) {
+make_wodd_name <- function(index) {
   wodd_depth <- seq(1:index)
   wodd_name <- map_chr(.x = wodd_depth, .f = raw_wodd)
   wodd_name
@@ -102,6 +102,40 @@ select_wodd_name_from_table <- function(index) {
     wodd_name
   }
 }
+#' Get sample size from depth
+#'
+#' @description Calculates the sample size needed given an alpha level and depth
+#'
+#' @param k an integer depth
+#' @param alpha alpha level such as 0.1, 0.05, 0.01
+#'
+#' @return a float sample size
+#'
+#' @export
+#'
+#' @examples
+#' get_n_from_depth(7, 0.01)
+get_n_from_depth <- function(k, alpha){
+  sample_size <- 2^((k-1) + log2(2 * (qnorm(1 - (alpha / 2))^2)))
+  sample_size
+}
+#' Get depth from sample size
+#'
+#' @description Calculates the depth given a sample size and alpha level
+#'
+#' @param n a sample size
+#' @param alpha alpha level such as 0.1, 0.05, 0.01
+#'
+#' @return an integer depth
+#'
+#' @export
+#'
+#' @examples
+#' get_dpeth_from_n(1e4, 0.05)
+get_dpeth_from_n <- function(n, alpha = 0.05){
+  k <- as.integer(floor(log2(n) - log2(2 * (qnorm(1 - (alpha / 2))^2))) + 1L)
+  k
+}
 #' Calculate whisker odds
 #'
 #' @description makes whisker odds
@@ -130,13 +164,14 @@ select_wodd_name_from_table <- function(index) {
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' wodds(rnorm(1e4, 0, 1))
-wodds <- function(y, include_tail_area = FALSE, include_outliers = FALSE,
+wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers = FALSE,
                   include_depth = FALSE, big_data = FALSE) {
   lower_value <- upper_value <- wodd_name <- NULL
   data <- sort(y)
   n <- length(data)
-  alpha <- 0.05
+  alpha <- alpha
   # rule 3
   k <- as.integer(floor(log2(n) - log2(2 * (qnorm(1 - (alpha / 2))^2))) + 1L)
   lvl <- (k - 1) * 2
@@ -177,9 +212,9 @@ wodds <- function(y, include_tail_area = FALSE, include_outliers = FALSE,
   depth <- seq(1, k)
   tail_area <- 2^depth
   if (big_data == TRUE) {
-    wodd_depth_name <- make_wodd_name_big_data(k)
+    wodd_depth_name <- make_wodd_name(k)
   } else {
-    wodd_depth_name <- select_wodd_name_from_table(k)
+    wodd_depth_name <- wodds::select_wodd_name_from_table(k)
   }
   o_upper <- sort(y[y > max(upper)])
   o_lower <- sort(y[y < min(lower)], decreasing = TRUE)
@@ -189,9 +224,16 @@ wodds <- function(y, include_tail_area = FALSE, include_outliers = FALSE,
   length(depth) <- o_max_len + length(depth)
   length(tail_area) <- o_max_len + length(tail_area)
   o_name <- paste0("*", seq(1, o_max_len), "*")
-  df_o <- tibble::tibble(lower_value = o_lower, wodd_name = o_name, upper_value = o_upper)
-  df_base <- tibble::tibble(lower_value = lower, wodd_name = wodd_depth_name, upper_value = upper)
-  df_with_outliers <- dplyr::bind_rows(df_base, df_o)
+  if (o_max_len > 0){
+    df_o <- tibble::tibble(lower_value = o_lower, wodd_name = o_name, upper_value = o_upper)
+    df_base <- tibble::tibble(lower_value = lower, wodd_name = wodd_depth_name, upper_value = upper)
+    df_with_outliers <- dplyr::bind_rows(df_base, df_o)
+  }else{
+    df_o <- tibble::tibble(lower_value = NULL, wodd_name = NULL, upper_value = NULL)
+    df_base <- tibble::tibble(lower_value = lower, wodd_name = wodd_depth_name, upper_value = upper)
+    df_with_outliers <- dplyr::bind_rows(df_base)
+  }
+
   df_with_outliers_depth <- df_with_outliers %>%
     dplyr::mutate(depth = depth) %>%
     dplyr::select(depth, lower_value, wodd_name, upper_value)

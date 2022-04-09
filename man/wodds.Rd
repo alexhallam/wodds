@@ -6,6 +6,7 @@
 \usage{
 wodds(
   y,
+  alpha = 0.05,
   include_tail_area = FALSE,
   include_outliers = FALSE,
   include_depth = FALSE,
@@ -37,5 +38,6 @@ A dataframe of wodds
 makes whisker odds
 }
 \examples{
+set.seed(42)
 wodds(rnorm(1e4, 0, 1))
 }
