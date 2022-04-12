@@ -5,9 +5,7 @@ Version: 0.1.0
 Authors@R: c(
     person("Alex", "Hallam", , "alexhallam6.28@gmail.com", role = c("aut", "cre")),
     person("R. Cody", "Heimberger", role="ctb"))
-Author: Alex Hallam
-Maintainer: <alexhallam6.28@gmail.com>
-Description: This package caluclates whisker odds. This is the same as
+Description: This package calculates whisker odds. This is the same as
     letter-values, but with an alternative naming of depths which 
     allow for depths beyond 26.
 License: MIT + file LICENSE

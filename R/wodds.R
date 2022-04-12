@@ -2,14 +2,18 @@
 #'
 #' @description wodd_format a private function
 #'
-#' @param wodd_name string
+#' @param wodd_name string. "S0", "S1", "M". etc
 #'
 #' @return A string
 wodd_format <- function(wodd_name) {
+  if(is.character(wodd_name)){
   wodd_name <- gsub("S0", "", wodd_name)
   wodd_name <- gsub("S1", "S", wodd_name)
   wodd_name
-}
+  }else{
+      stop("wodd_name must be a string")
+    }
+  }
 #' raw_wodd
 #'
 #' @description raw_wodd a private function
@@ -23,6 +27,7 @@ wodd_format <- function(wodd_name) {
 #'
 #' @export
 raw_wodd <- function(index) {
+  if(is.integer(index)){
   int <- 2^index
   power <- 0
   counted <- FALSE
@@ -45,6 +50,10 @@ raw_wodd <- function(index) {
   } else if ((16^(power) * 8) == int) {
     return(wodd_format(glue::glue("S{power}E")))
   }
+  }
+  else{
+    stop("index must be an integer")
+  }
 }
 #' make_wodd_name
 #'
@@ -58,9 +67,13 @@ raw_wodd <- function(index) {
 #'
 #' @export
 make_wodd_name <- function(index) {
+  if(is.integer(index)){
   wodd_depth <- seq(1:index)
   wodd_name <- map_chr(.x = wodd_depth, .f = raw_wodd)
   wodd_name
+  }else{
+    stop("index must be an integer")
+  }
 }
 #' select_wodd_name_from_table
 #'
@@ -77,13 +90,13 @@ make_wodd_name <- function(index) {
 #' @export
 #'
 #' @examples
-#' select_wodd_name_from_table(1)
+#' select_wodd_name_from_table(1L)
 select_wodd_name_from_table <- function(index) {
-  i <- wodd_name <- NULL
+  if(is.integer(index)){
   if (index > 100) {
-    stop("Please set big_data = TRUE")
+    stop("depth > 100 which is larger than precalculated table of wodd names")
   } else {
-    first_100_wodds <- structure(list(i = 1:100, wodd_name = c(
+    first_100_wodds <- c(
       "M", "F", "E", "S", "SM",
       "SF", "SE", "S2", "S2M", "S2F", "S2E", "S3", "S3M", "S3F", "S3E",
       "S4", "S4M", "S4F", "S4E", "S5", "S5M", "S5F", "S5E", "S6", "S6M",
@@ -96,51 +109,72 @@ select_wodd_name_from_table <- function(index) {
       "S20M", "S20F", "S20E", "S21", "S21M", "S21F", "S21E", "S22",
       "S22M", "S22F", "S22E", "S23", "S23M", "S23F", "S23E", "S24",
       "S24M", "S24F", "S24E", "S25"
-    )), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, -100L))
-    wodd_name <- dplyr::filter(first_100_wodds, i <= index) %>%
-      dplyr::pull(wodd_name)
-    wodd_name
+    )
+    first_100_wodds[1:index]
+  }
+  }else{
+    stop("index must be an integer")
   }
 }
 #' Get sample size from depth
 #'
 #' @description Calculates the sample size needed given an alpha level and depth
 #'
-#' @param k an integer depth
-#' @param alpha alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95% confidence interval
+#' @param d an integer depth
+#' @param alpha alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95 percent confidence interval
 #'
 #' @return a float sample size
 #'
 #' @export
 #'
 #' @examples
-#' get_n_from_depth(7, 0.01)
-get_n_from_depth <- function(k, alpha){
-  sample_size <- 2^((k-1) + log2(2 * (qnorm(1 - (alpha / 2))^2)))
-  sample_size
+#' get_n_from_depth(7L, 0.01, conservative = TRUE)
+get_n_from_depth <- function(d, alpha = 0.05){
+  if(!is.integer(d)){
+    stop("d (depth) must be an integer")
+  }else{
+    if (!is.null(alpha)){
+      if (conservative == FALSE){
+        sample_size <- 2^((d-1) + log2(2 * (qnorm(1 - (alpha / 2))^2)))
+        sample_size
+      }else{
+        sample_size <- 2^((d) + log2(2 * (qnorm(1 - (alpha / 2))^2)))
+        sample_size
+      }
+    }
+  }
 }
 #' Get depth from sample size
 #'
 #' @description Calculates the depth given a sample size and alpha level
 #'
 #' @param n an integer scalar sample size
-#' @param alpha alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95% confidence interval
+#' @param alpha alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95 percent confidence interval
 #'
 #' @return an integer depth
 #'
 #' @export
 #'
 #' @examples
-#' get_depth_from_n(1e4, 0.05)
+#' get_depth_from_n(1e4L, 0.05)
 get_depth_from_n <- function(n, alpha = 0.05){
-  k <- as.integer(floor(log2(n) - log2(2 * (qnorm(1 - (alpha / 2))^2))) + 1L)
-  k
+  if(is.integer(n)){
+    if(!is.null(alpha)){
+      stopifnot(is.numeric(alpha) && length(alpha) == 1)
+      stopifnot(alpha > 0 && alpha < 1)
+      k <- as.integer(floor(log2(n) - log2(2 * (qnorm(1 - (alpha / 2))^2))) + 1L)
+      k
+    }
+  }else{
+    stop("n must be an integer. Here is an example get_depth_from_n(n=1e4L, 0.05). suffix the number with L to force value to be an integer")
+  }
 }
 #' Calculate whisker odds
 #'
 #' @description makes whisker odds
 #'
 #' @param y A vector of values
+#' @param alpha the alpha level, such as 0.05 which is the compliment of the confidence interval, such as 0.95
 #' @param include_tail_area a binary.
 #' If true then include a column of tail area 2^(i)
 #' @param include_outliers a binary.

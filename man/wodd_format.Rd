@@ -7,7 +7,7 @@
 wodd_format(wodd_name)
 }
 \arguments{
-\item{wodd_name}{string}
+\item{wodd_name}{string. "S0", "S1", "M". etc}
 }
 \value{
 A string

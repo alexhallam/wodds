@@ -1,11 +1,19 @@
 library("wodds")
 
 test_that("select_wodd_name_from_table(3)", {
-  expect_equal(wodds::select_wodd_name_from_table(3), c("M", "F", "E"))
+  expect_equal(wodds::select_wodd_name_from_table(3L), c("M", "F", "E"))
 })
 
 test_that("wodds::select_wodd_name_from_table(300)", {
-    expect_error( wodds::select_wodd_name_from_table(300) )
+    expect_error( wodds::select_wodd_name_from_table(300L) )
+})
+
+test_that("wodds::get_depth_from_n(1e4L, 0.05)", {
+  expect_equal(get_depth_from_n(1e4L, 0.05), 11L)
+})
+
+test_that("wodds::get_n_from_depth(7L, 0.01)", {
+  expect_equal(round(get_n_from_depth(7L, 0.01),0),849)
 })
 
 a <- c(764.112210522422, 768.512173522422, 760.802151522422, 767.124722522422,
@@ -790,6 +798,10 @@ test_that("wodds::wodds(rnorm(1e4, 0, 1))", {
                                                                                                                                                     `99.905%` = 3.22015120313544, `99.955%` = 3.33812482917941)), row.names = c(NA,-11L), class = c("tbl_df", "tbl", "data.frame"))
   expect_success(expect_equal(wodds::wodds(a), true))
 })
+
+
+
+
 
 
 

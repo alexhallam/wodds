@@ -16,6 +16,8 @@ wodds(
 \arguments{
 \item{y}{A vector of values}
 
+\item{alpha}{the alpha level, such as 0.05 which is the compliment of the confidence interval, such as 0.95}
+
 \item{include_tail_area}{a binary.
 If true then include a column of tail area 2^(i)}
 

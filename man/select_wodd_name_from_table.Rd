@@ -16,5 +16,5 @@ A vector
 select_wodd_name_from_table a private function
 }
 \examples{
-select_wodd_name_from_table(1)
+select_wodd_name_from_table(1L)
 }
