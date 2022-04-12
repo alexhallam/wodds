@@ -131,8 +131,8 @@ get_n_from_depth <- function(k, alpha){
 #' @export
 #'
 #' @examples
-#' get_dpeth_from_n(1e4, 0.05)
-get_dpeth_from_n <- function(n, alpha = 0.05){
+#' get_depth_from_n(1e4, 0.05)
+get_depth_from_n <- function(n, alpha = 0.05){
   k <- as.integer(floor(log2(n) - log2(2 * (qnorm(1 - (alpha / 2))^2))) + 1L)
   k
 }
