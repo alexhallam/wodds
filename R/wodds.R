@@ -107,7 +107,7 @@ select_wodd_name_from_table <- function(index) {
 #' @description Calculates the sample size needed given an alpha level and depth
 #'
 #' @param k an integer depth
-#' @param alpha alpha level such as 0.1, 0.05, 0.01
+#' @param alpha alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95% confidence interval
 #'
 #' @return a float sample size
 #'
@@ -123,8 +123,8 @@ get_n_from_depth <- function(k, alpha){
 #'
 #' @description Calculates the depth given a sample size and alpha level
 #'
-#' @param n a sample size
-#' @param alpha alpha level such as 0.1, 0.05, 0.01
+#' @param n an integer scalar sample size
+#' @param alpha alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95% confidence interval
 #'
 #' @return an integer depth
 #'
