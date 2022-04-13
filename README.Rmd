@@ -40,6 +40,7 @@ This is a basic example which shows you how to solve a common problem:
 options(digits=1)
 library(wodds)
 library(knitr)
+set.seed(42)
 a <- rnorm(n = 1e4, 0, 1)
 df_wodds <- wodds::wodds(a)
 df_wodds
