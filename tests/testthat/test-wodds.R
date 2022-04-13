@@ -8,12 +8,12 @@ test_that("wodds::select_wodd_name_from_table(300)", {
     expect_error( wodds::select_wodd_name_from_table(300L) )
 })
 
-test_that("wodds::get_depth_from_n(1e4L, 0.05)", {
-  expect_equal(get_depth_from_n(1e4L, 0.05), 11L)
+test_that("wodds::get_depth_from_n(n=15734L, alpha = 0.05)", {
+  expect_equal(wodds::get_depth_from_n(n=15734L, alpha = 0.05), 11L)
 })
 
-test_that("wodds::get_n_from_depth(7L, 0.01)", {
-  expect_equal(round(get_n_from_depth(7L, 0.01),0),849)
+test_that("wodds::get_n_from_depth(d = 11L, conservative = TRUE))", {
+  expect_equal(floor(wodds::get_n_from_depth(d = 11L, conservative = TRUE)),15734)
 })
 
 a <- c(764.112210522422, 768.512173522422, 760.802151522422, 767.124722522422,

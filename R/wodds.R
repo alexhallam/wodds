@@ -122,24 +122,25 @@ select_wodd_name_from_table <- function(index) {
 #'
 #' @param d an integer depth
 #' @param alpha alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95 percent confidence interval
+#' @param conservative a bool. default is FALSE. If TRUE then a conservative (larger) sample size is returned.
 #'
 #' @return a float sample size
 #'
 #' @export
 #'
 #' @examples
-#' get_n_from_depth(7L, 0.01, conservative = TRUE)
-get_n_from_depth <- function(d, alpha = 0.05){
+#' get_n_from_depth(7L, 0.01)
+get_n_from_depth <- function(d, alpha = 0.05, conservative = TRUE){
   if(!is.integer(d)){
     stop("d (depth) must be an integer")
   }else{
     if (!is.null(alpha)){
       if (conservative == FALSE){
         sample_size <- 2^((d-1) + log2(2 * (qnorm(1 - (alpha / 2))^2)))
-        sample_size
+        floor(sample_size) # a simple round down of the decimals # not necessary just convenience
       }else{
         sample_size <- 2^((d) + log2(2 * (qnorm(1 - (alpha / 2))^2)))
-        sample_size
+        floor(sample_size) # a simple round down of the decimals # not necessary just convenience
       }
     }
   }
@@ -207,7 +208,7 @@ wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers =
   n <- length(data)
   alpha <- alpha
   # rule 3
-  k <- as.integer(floor(log2(n) - log2(2 * (qnorm(1 - (alpha / 2))^2))) + 1L)
+  k <- get_depth_from_n(as.integer(n), 0.05)
   lvl <- (k - 1) * 2
   nq <- lvl - 1
   qs <- rep(0, nq) # initialize array of quantiles

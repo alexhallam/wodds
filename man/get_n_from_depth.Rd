@@ -4,12 +4,14 @@
 \alias{get_n_from_depth}
 \title{Get sample size from depth}
 \usage{
-get_n_from_depth(d, alpha = 0.05)
+get_n_from_depth(d, alpha = 0.05, conservative = TRUE)
 }
 \arguments{
 \item{d}{an integer depth}
 
 \item{alpha}{alpha level such as 0.1, 0.05, 0.01. An alpha of 0.05 would be associated with a 95 percent confidence interval}
+
+\item{conservative}{a bool. default is FALSE. If TRUE then a conservative (larger) sample size is returned.}
 }
 \value{
 a float sample size
