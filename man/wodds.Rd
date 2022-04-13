@@ -9,8 +9,7 @@ wodds(
   alpha = 0.05,
   include_tail_area = FALSE,
   include_outliers = FALSE,
-  include_depth = FALSE,
-  big_data = FALSE
+  include_depth = FALSE
 )
 }
 \arguments{
@@ -26,9 +25,6 @@ If true include a column of outliers beyond the last wodd depth}
 
 \item{include_depth}{a binary.
 If true include a column indicating the depth of the letter value}
-
-\item{big_data}{a binary.
-If k is larger than 100 the table is no longer useful.}
 }
 \value{
 A dataframe of wodds

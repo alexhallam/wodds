@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 <h1 align="center">Whisker Odds (wodds)</h1>
-<p align="center">wodds calculation for big data</p>
+<p align="center">sensible summary statistics for big data</p>
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -46,15 +46,34 @@ df_wodds <- wodds::wodds(a)
 df_wodds
 ```
 
+Outliers beyond the last `wodd` are marked with `O<value>` in ascending order. There should 
+rarly be more than 7 outliers when using `wodds`.
+
 ```{r example 1.1}
 df_wodds_and_outs <- wodds::wodds(a, include_outliers = TRUE)
+df_wodds_and_outs
+```
+
+Though not neccesary it is possible to include tail area if additional communication or
+teaching is needed. It is assumed that the `wodd` should be explainatory enough
+to not need to rely on `tail_area`.
+
+```{r example 1.2}
+df_wodds_and_outs <- wodds::wodds(a, include_tail_area  = TRUE)
+df_wodds_and_outs
+```
+
+An example with all options set to `TRUE`.
+
+```{r example 1.3}
+df_wodds_and_outs <- wodds::wodds(a, include_depth = TRUE, include_tail_area = TRUE, include_outliers = TRUE)
 df_wodds_and_outs
 ```
 
 A `knitr::kable` example for publication.
 
 ```{r example 2}
-knitr::kable(df_wodds, align = 'c',digits = 3)
+knitr::kable(df_wodds_and_outs, align = 'c',digits = 3)
 ```
 
 ### Getting the depth

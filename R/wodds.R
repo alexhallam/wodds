@@ -182,8 +182,6 @@ get_depth_from_n <- function(n, alpha = 0.05){
 #' If true include a column of outliers beyond the last wodd depth
 #' @param include_depth a binary.
 #' If true include a column indicating the depth of the letter value
-#' @param big_data a binary.
-#' If k is larger than 100 the table is no longer useful.
 #'
 #' @return A dataframe of wodds
 #'   \item{lower_value}{lower value}
@@ -202,7 +200,7 @@ get_depth_from_n <- function(n, alpha = 0.05){
 #' set.seed(42)
 #' wodds(rnorm(1e4, 0, 1))
 wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers = FALSE,
-                  include_depth = FALSE, big_data = FALSE) {
+                  include_depth = FALSE) {
   lower_value <- upper_value <- wodd_name <- NULL
   data <- sort(y)
   n <- length(data)
@@ -246,11 +244,7 @@ wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers =
   upper <- vf[seq(2, length(vf), 2)]
   depth <- seq(1, k)
   tail_area <- 2^depth
-  if (big_data == TRUE) {
-    wodd_depth_name <- make_wodd_name(k)
-  } else {
-    wodd_depth_name <- wodds::select_wodd_name_from_table(k)
-  }
+  wodd_depth_name <- wodds::select_wodd_name_from_table(k)
   o_upper <- sort(y[y > max(upper)])
   o_lower <- sort(y[y < min(lower)], decreasing = TRUE)
   o_max_len <- max(length(o_upper), length(o_lower))
@@ -258,7 +252,7 @@ wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers =
   length(o_lower) <- o_max_len
   length(depth) <- o_max_len + length(depth)
   length(tail_area) <- o_max_len + length(tail_area)
-  o_name <- paste0("*", seq(1, o_max_len), "*")
+  o_name <- paste0("O", seq(1, o_max_len))
   if (o_max_len > 0){
     df_o <- tibble::tibble(lower_value = o_lower, wodd_name = o_name, upper_value = o_upper)
     df_base <- tibble::tibble(lower_value = lower, wodd_name = wodd_depth_name, upper_value = upper)
@@ -282,6 +276,8 @@ wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers =
       df_with_outliers_depth_tail_area %>% dplyr::select(-depth)
     } else if (include_tail_area == TRUE & include_depth == TRUE) {
       df_with_outliers_depth_tail_area
+    }else if (include_tail_area == FALSE & include_depth == TRUE){
+      df_with_outliers_depth_tail_area %>% dplyr::select(-tail_area)
     }
   } else {
     df_with_depth_tail_area <- df_with_outliers_depth_tail_area %>% dplyr::filter(!is.na(depth))
@@ -291,6 +287,8 @@ wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers =
       df_with_depth_tail_area %>% dplyr::select(-depth)
     } else if (include_tail_area == TRUE & include_depth == TRUE) {
       df_with_depth_tail_area
+    }else if (include_tail_area == FALSE & include_depth == TRUE){
+      df_with_depth_tail_area %>% dplyr::select(-tail_area)
     }
   }
 }

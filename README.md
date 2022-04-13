@@ -4,7 +4,7 @@
 Whisker Odds (wodds)
 </h1>
 <p align="center">
-wodds calculation for big data
+sensible summary statistics for big data
 </p>
 <!-- badges: start -->
 <!-- badges: end -->
@@ -51,6 +51,9 @@ df_wodds
 #> 11     -3.13   S2E            3.34
 ```
 
+Outliers beyond the last `wodd` are marked with `O<value>` in ascending
+order. There should rarly be more than 7 outliers when using `wodds`.
+
 ``` r
 df_wodds_and_outs <- wodds::wodds(a, include_outliers = TRUE)
 df_wodds_and_outs
@@ -68,33 +71,89 @@ df_wodds_and_outs
 #>  9     -2.86   S2M            2.88  
 #> 10     -3.01   S2F            3.22  
 #> 11     -3.13   S2E            3.34  
-#> 12     -3.14   *1*            3.34  
-#> 13     -3.18   *2*            3.47  
-#> 14     -3.20   *3*            3.50  
-#> 15     -3.33   *4*            3.58  
-#> 16     -3.37   *5*            4.33  
-#> 17     -4.04   *6*           NA
+#> 12     -3.14   O1             3.34  
+#> 13     -3.18   O2             3.47  
+#> 14     -3.20   O3             3.50  
+#> 15     -3.33   O4             3.58  
+#> 16     -3.37   O5             4.33  
+#> 17     -4.04   O6            NA
+```
+
+Though not neccesary it is possible to include tail area if additional
+communication or teaching is needed. It is assumed that the `wodd`
+should be explainatory enough to not need to rely on `tail_area`.
+
+``` r
+df_wodds_and_outs <- wodds::wodds(a, include_tail_area  = TRUE)
+df_wodds_and_outs
+#> # A tibble: 11 × 4
+#>    tail_area lower_value wodd_name upper_value
+#>        <dbl>       <dbl> <chr>           <dbl>
+#>  1         2     -0.0152 M             -0.0152
+#>  2         4     -0.694  F              0.663 
+#>  3         8     -1.17   E              1.16  
+#>  4        16     -1.57   S              1.52  
+#>  5        32     -1.88   SM             1.87  
+#>  6        64     -2.17   SF             2.15  
+#>  7       128     -2.41   SE             2.41  
+#>  8       256     -2.66   S2             2.64  
+#>  9       512     -2.86   S2M            2.88  
+#> 10      1024     -3.01   S2F            3.22  
+#> 11      2048     -3.13   S2E            3.34
+```
+
+An example with all options set to `TRUE`.
+
+``` r
+df_wodds_and_outs <- wodds::wodds(a, include_depth = TRUE, include_tail_area = TRUE, include_outliers = TRUE)
+df_wodds_and_outs
+#> # A tibble: 17 × 5
+#>    depth tail_area lower_value wodd_name upper_value
+#>    <int>     <dbl>       <dbl> <chr>           <dbl>
+#>  1     1         2     -0.0152 M             -0.0152
+#>  2     2         4     -0.694  F              0.663 
+#>  3     3         8     -1.17   E              1.16  
+#>  4     4        16     -1.57   S              1.52  
+#>  5     5        32     -1.88   SM             1.87  
+#>  6     6        64     -2.17   SF             2.15  
+#>  7     7       128     -2.41   SE             2.41  
+#>  8     8       256     -2.66   S2             2.64  
+#>  9     9       512     -2.86   S2M            2.88  
+#> 10    10      1024     -3.01   S2F            3.22  
+#> 11    11      2048     -3.13   S2E            3.34  
+#> 12    NA        NA     -3.14   O1             3.34  
+#> 13    NA        NA     -3.18   O2             3.47  
+#> 14    NA        NA     -3.20   O3             3.50  
+#> 15    NA        NA     -3.33   O4             3.58  
+#> 16    NA        NA     -3.37   O5             4.33  
+#> 17    NA        NA     -4.04   O6            NA
 ```
 
 A `knitr::kable` example for publication.
 
 ``` r
-knitr::kable(df_wodds, align = 'c',digits = 3)
+knitr::kable(df_wodds_and_outs, align = 'c',digits = 3)
 ```
 
-| lower\_value | wodd\_name | upper\_value |
-|:------------:|:----------:|:------------:|
-|    -0.01     |     M      |    -0.01     |
-|    -0.69     |     F      |     0.66     |
-|    -1.17     |     E      |     1.16     |
-|    -1.57     |     S      |     1.52     |
-|    -1.88     |     SM     |     1.87     |
-|    -2.17     |     SF     |     2.15     |
-|    -2.42     |     SE     |     2.41     |
-|    -2.66     |     S2     |     2.64     |
-|    -2.86     |    S2M     |     2.88     |
-|    -3.01     |    S2F     |     3.22     |
-|    -3.13     |    S2E     |     3.34     |
+| depth | tail\_area | lower\_value | wodd\_name | upper\_value |
+|:-----:|:----------:|:------------:|:----------:|:------------:|
+|   1   |     2      |    -0.01     |     M      |    -0.01     |
+|   2   |     4      |    -0.69     |     F      |     0.66     |
+|   3   |     8      |    -1.17     |     E      |     1.16     |
+|   4   |     16     |    -1.57     |     S      |     1.52     |
+|   5   |     32     |    -1.88     |     SM     |     1.87     |
+|   6   |     64     |    -2.17     |     SF     |     2.15     |
+|   7   |    128     |    -2.42     |     SE     |     2.41     |
+|   8   |    256     |    -2.66     |     S2     |     2.64     |
+|   9   |    512     |    -2.86     |    S2M     |     2.88     |
+|  10   |    1024    |    -3.01     |    S2F     |     3.22     |
+|  11   |    2048    |    -3.13     |    S2E     |     3.34     |
+|  NA   |     NA     |    -3.14     |     O1     |     3.34     |
+|  NA   |     NA     |    -3.18     |     O2     |     3.47     |
+|  NA   |     NA     |    -3.20     |     O3     |     3.50     |
+|  NA   |     NA     |    -3.33     |     O4     |     3.58     |
+|  NA   |     NA     |    -3.37     |     O5     |     4.33     |
+|  NA   |     NA     |    -4.04     |     O6     |      NA      |
 
 ### Getting the depth
 
