@@ -47,15 +47,15 @@ df_wodds
 ```
 
 Outliers beyond the last `wodd` are marked with `O<value>` in ascending order. There should 
-rarly be more than 7 outliers when using `wodds`.
+rarely be more than 7 outliers when using `wodds`.
 
 ```{r example 1.1}
 df_wodds_and_outs <- wodds::wodds(a, include_outliers = TRUE)
 df_wodds_and_outs
 ```
 
-Though not neccesary it is possible to include tail area if additional communication or
-teaching is needed. It is assumed that the `wodd` should be explainatory enough
+Though not necessary it is possible to include tail area if additional communication or
+teaching is needed. It is assumed that the `wodd` should be explanatory enough
 to not need to rely on `tail_area`.
 
 ```{r example 1.2}
@@ -91,11 +91,11 @@ wodds::get_n_from_depth(d = 11L)
 
 ## Whisker Odds and Letter-Values
 
-Letter-Values are a fantiastic tool! I think the naming could be improved. 
+Letter-Values are a fantastic tool! I think the naming could be improved. 
 For this reason I introduce whisker odds (wodds) as an alternative naming system.
 My hypothesis is that with an alternative naming system the use of these 
 descriptive statistics will be see more use. This is a rebranding of a what I
-think is a powerfull modern statistical tool.
+think is a powerful modern statistical tool.
 
 ![](man/figures/table.png)
 
