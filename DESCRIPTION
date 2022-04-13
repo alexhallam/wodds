@@ -5,9 +5,10 @@ Version: 0.1.0
 Authors@R: c(
     person("Alex", "Hallam", , "alexhallam6.28@gmail.com", role = c("aut", "cre")),
     person("R. Cody", "Heimberger", role="ctb"))
-Description: This package calculates whisker odds. This is the same as
+Description: Calculates whisker odds. This is the same as
     letter-values, but with an alternative naming of depths which 
-    allow for depths beyond 26.
+    allow for depths beyond 26. For a reference to letter-values see 
+    Heike Hofmann and Hadley Wickham and Karen Kafadar (2017) <doi:10.1080/10618600.2017.1305277>
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

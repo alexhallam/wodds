@@ -238,8 +238,7 @@ wodds <- function(y, alpha = 0.05, include_tail_area = FALSE, include_outliers =
     qs[(i - 1) * 2] <- qu
     vf <- quantile(data, qs)
   }
-  qs <- c(.5, .5, qs)
-  vf <- c(median(vf), median(vf), vf)
+  vf <- c(median(data), median(data), vf)
   lower <- vf[seq(1, length(vf), 2)]
   upper <- vf[seq(2, length(vf), 2)]
   depth <- seq(1, k)
