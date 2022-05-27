@@ -184,7 +184,7 @@ naming system the use of these descriptive statistics will be see more
 use. This is a rebranding of a what I think is a powerful modern
 statistical tool.
 
-In this system alliteration is exploited to the fullest!
+In this system the `wodd name` uses alliteration to the fullest!
 
 ```
 (M)edian or middle
