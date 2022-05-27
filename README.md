@@ -186,13 +186,11 @@ statistical tool.
 
 In this system alliteration is exploited to the fullest!
 
+```
 (M)edian or middle
-
 (F)ourth
-
 (E)ighth
-
 (S)ixteenth
-
+```
 
 ![](man/figures/table.png)
