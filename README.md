@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <h1 align="center">
 Whisker Odds (wodds)
@@ -7,6 +8,11 @@ Whisker Odds (wodds)
 sensible summary statistics for big data
 </p>
 <!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/wodds)](https://cran.r-project.org/package=wodds)
+![Downloads](https://cranlogs.r-pkg.org/badges/wodds)
+
 <!-- badges: end -->
 
 The goal of `wodds` is to make the calculations of whisker odds (wodds)
